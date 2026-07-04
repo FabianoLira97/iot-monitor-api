@@ -1,0 +1,12 @@
+services:
+  api:
+    build: .
+    container_name: iot-monitor-api
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: sqlite:////app/data/iot_monitor.db
+      TEMP_MAX: 30
+      UMIDADE_MAX: 70
+    volumes:
+      - ./data:/app/data
