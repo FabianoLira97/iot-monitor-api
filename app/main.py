@@ -4,6 +4,7 @@ import os
 import sqlite3
 from contextlib import asynccontextmanager
 from typing import Annotated
+from fastapi.staticfiles import StaticFiles
 
 from fastapi import FastAPI, HTTPException, Query, status
 
@@ -28,6 +29,7 @@ from app.schemas import (
 
 TEMP_MAX = float(os.getenv("TEMP_MAX", "30"))
 UMIDADE_MAX = float(os.getenv("UMIDADE_MAX", "70"))
+FRONTEND_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
 
 
 def calculate_status(temperatura: float, umidade: float) -> str:
@@ -139,3 +141,13 @@ def listar_alertas(limit: Annotated[int, Query(ge=1, le=500)] = 50):
 @app.get("/dashboard/resumo", response_model=DashboardResumo, tags=["Dashboard"])
 def dashboard_resumo():
     return get_dashboard_summary()
+
+app.mount("/web", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+
+@app.get("/", tags=["Status"])
+def root() -> dict[str, str]:
+    return {
+        "mensagem": "IoT Monitor API está online",
+        "documentacao": "/docs",
+        "frontend": "/web",
+    }

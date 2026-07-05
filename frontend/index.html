@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IoT Monitor Dashboard</title>
+  <link rel="stylesheet" href="/web/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Monitoramento IoT</p>
+      <h1>Temperatura e Umidade</h1>
+    </div>
+    <button id="btnAtualizar" class="btn primary">Atualizar dados</button>
+  </header>
+
+  <main class="container">
+    <section class="cards" aria-label="Resumo do sistema">
+      <article class="card">
+        <span>Sensores</span>
+        <strong id="totalSensores">0</strong>
+      </article>
+      <article class="card">
+        <span>Ativos</span>
+        <strong id="sensoresAtivos">0</strong>
+      </article>
+      <article class="card">
+        <span>Leituras</span>
+        <strong id="totalLeituras">0</strong>
+      </article>
+      <article class="card danger">
+        <span>Alertas</span>
+        <strong id="totalAlertas">0</strong>
+      </article>
+    </section>
+
+    <section class="grid">
+      <article class="panel">
+        <div class="panel-header">
+          <h2>Cadastrar sensor</h2>
+          <p>Crie sensores para receber leituras.</p>
+        </div>
+        <form id="formSensor" class="form">
+          <label>
+            Nome
+            <input id="sensorNome" type="text" placeholder="Sensor Linha 01" minlength="3" required />
+          </label>
+          <label>
+            Localização
+            <input id="sensorLocalizacao" type="text" placeholder="Setor de Produção" minlength="2" required />
+          </label>
+          <label>
+            Descrição
+            <input id="sensorDescricao" type="text" placeholder="Sensor simulado" />
+          </label>
+          <button class="btn primary" type="submit">Cadastrar</button>
+        </form>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <h2>Registrar leitura manual</h2>
+          <p>Use para testar sem o simulador.</p>
+        </div>
+        <form id="formLeitura" class="form">
+          <label>
+            Sensor
+            <select id="leituraSensor" required></select>
+          </label>
+          <label>
+            Temperatura °C
+            <input id="temperatura" type="number" min="-50" max="120" step="0.01" placeholder="26.5" required />
+          </label>
+          <label>
+            Umidade %
+            <input id="umidade" type="number" min="0" max="100" step="0.01" placeholder="61.0" required />
+          </label>
+          <button class="btn primary" type="submit">Salvar leitura</button>
+        </form>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header row">
+        <div>
+          <h2>Sensores cadastrados</h2>
+          <p>Lista de sensores disponíveis na API.</p>
+        </div>
+      </div>
+      <div id="listaSensores" class="sensor-list"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header row">
+        <div>
+          <h2>Leituras recentes</h2>
+          <p>Dados enviados pelo simulador ou formulário manual.</p>
+        </div>
+        <label class="checkbox">
+          <input id="apenasAlertas" type="checkbox" />
+          Apenas alertas
+        </label>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Sensor</th>
+              <th>Temperatura</th>
+              <th>Umidade</th>
+              <th>Status</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaLeituras"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <p id="mensagem" class="message" role="status"></p>
+  </main>
+
+  <script src="/web/app.js"></script>
+</body>
+</html>

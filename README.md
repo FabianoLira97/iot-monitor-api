@@ -2,31 +2,35 @@
 
 API REST para monitoramento de temperatura e umidade usando sensores IoT simulados.
 
-Este projeto foi criado para portfólio no GitHub e demonstra conceitos de **Python**, **API REST**, **SQLite**, **IoT**, **automação industrial**, validação de dados e organização básica de backend.
+Este projeto foi criado para portfólio no GitHub e demonstra conceitos de **Python**, **API REST**, **SQLite**, **IoT**, **automação industrial**, validação de dados, organização básica de backend e criação de um **frontend web simples** para visualização dos dados.
 
 ## Funcionalidades
 
-- Cadastro e listagem de sensores.
-- Ativação e desativação de sensores.
-- Registro de leituras de temperatura e umidade.
-- Classificação automática de leituras como normal ou alerta.
-- Consulta de histórico de leituras.
-- Consulta específica de alertas.
-- Resumo para dashboard.
-- Simulador de sensor enviando dados automaticamente para a API.
-- Testes automatizados básicos.
-- Execução local ou via Docker.
+* Cadastro e listagem de sensores.
+* Ativação e desativação de sensores.
+* Registro de leituras de temperatura e umidade.
+* Classificação automática de leituras como normal ou alerta.
+* Consulta de histórico de leituras.
+* Consulta específica de alertas.
+* Resumo para dashboard.
+* Simulador de sensor enviando dados automaticamente para a API.
+* Frontend web para visualização dos dados.
+* Testes automatizados básicos.
+* Execução local ou via Docker.
 
 ## Tecnologias utilizadas
 
-- Python
-- FastAPI
-- SQLite
-- Uvicorn
-- Pydantic
-- Requests
-- Pytest
-- Docker
+* Python
+* FastAPI
+* SQLite
+* Uvicorn
+* Pydantic
+* Requests
+* Pytest
+* Docker
+* HTML
+* CSS
+* JavaScript
 
 ## Estrutura do projeto
 
@@ -38,6 +42,10 @@ Este projeto foi criado para portfólio no GitHub e demonstra conceitos de **Pyt
 │   ├── main.py
 │   ├── repository.py
 │   └── schemas.py
+├── frontend/
+│   ├── index.html
+│   ├── styles.css
+│   └── app.js
 ├── scripts/
 │   └── simulador_sensor.py
 ├── tests/
@@ -61,6 +69,8 @@ git clone https://github.com/seu-usuario/iot-monitor-api.git
 cd iot-monitor-api
 ```
 
+Substitua `seu-usuario` pelo seu usuário do GitHub.
+
 ### 2. Crie o ambiente virtual
 
 No Linux/macOS:
@@ -70,11 +80,23 @@ python -m venv .venv
 source .venv/bin/activate
 ```
 
-No Windows:
+No Windows usando PowerShell:
 
-```bash
+```powershell
 python -m venv .venv
-.venv\Scripts\activate
+.\.venv\Scripts\Activate.ps1
+```
+
+Caso apareça erro de permissão no PowerShell, execute:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+```
+
+Depois tente ativar novamente:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
 ```
 
 ### 3. Instale as dependências
@@ -101,6 +123,51 @@ A documentação interativa ficará em:
 http://127.0.0.1:8000/docs
 ```
 
+O frontend web ficará disponível em:
+
+```text
+http://127.0.0.1:8000/web/
+```
+
+## Frontend Web
+
+O projeto possui um frontend simples desenvolvido com **HTML**, **CSS** e **JavaScript puro**.
+
+O dashboard web permite visualizar os dados da API de forma mais amigável, incluindo:
+
+* total de sensores cadastrados;
+* sensores ativos;
+* total de leituras registradas;
+* quantidade de alertas;
+* listagem de leituras recentes;
+* cadastro de novos sensores;
+* registro manual de leituras;
+* filtro para visualizar apenas alertas.
+
+Para acessar o frontend, execute a API:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Depois abra no navegador:
+
+```text
+http://127.0.0.1:8000/web/
+```
+
+Para visualizar dados no dashboard, você pode cadastrar sensores manualmente pela interface ou executar o simulador IoT em outro terminal:
+
+```bash
+python scripts/simulador_sensor.py
+```
+
+No Windows PowerShell:
+
+```powershell
+python .\scripts\simulador_sensor.py
+```
+
 ## Como executar com Docker
 
 ```bash
@@ -111,6 +178,12 @@ Depois acesse:
 
 ```text
 http://127.0.0.1:8000/docs
+```
+
+Para acessar o frontend:
+
+```text
+http://127.0.0.1:8000/web/
 ```
 
 ## Variáveis de ambiente
@@ -125,8 +198,8 @@ UMIDADE_MAX=70
 
 Por padrão:
 
-- Leituras com temperatura maior que `30°C` geram alerta.
-- Leituras com umidade maior que `70%` geram alerta.
+* Leituras com temperatura maior que `30°C` geram alerta.
+* Leituras com umidade maior que `70%` geram alerta.
 
 ## Endpoints principais
 
@@ -255,12 +328,24 @@ Com a API rodando, execute:
 python scripts/simulador_sensor.py
 ```
 
+No Windows PowerShell:
+
+```powershell
+python .\scripts\simulador_sensor.py
+```
+
 O simulador cria um sensor automaticamente, caso não seja informado um ID, e envia leituras aleatórias para a API.
 
 Exemplo com parâmetros:
 
 ```bash
 python scripts/simulador_sensor.py --quantidade 30 --intervalo 1 --temp-min 22 --temp-max 38 --umidade-min 40 --umidade-max 90
+```
+
+No Windows PowerShell:
+
+```powershell
+python .\scripts\simulador_sensor.py --quantidade 30 --intervalo 1 --temp-min 22 --temp-max 38 --umidade-min 40 --umidade-max 90
 ```
 
 Exemplo usando um sensor já cadastrado:
@@ -279,28 +364,30 @@ pytest -q
 
 A API define o status de cada leitura assim:
 
-| Condição | Status |
-|---|---|
-| Temperatura dentro do limite e umidade dentro do limite | `NORMAL` |
-| Temperatura acima do limite | `ALERTA_TEMPERATURA` |
-| Umidade acima do limite | `ALERTA_UMIDADE` |
-| Temperatura e umidade acima do limite | `ALERTA_TEMPERATURA_UMIDADE` |
+| Condição                                                | Status                       |
+| ------------------------------------------------------- | ---------------------------- |
+| Temperatura dentro do limite e umidade dentro do limite | `NORMAL`                     |
+| Temperatura acima do limite                             | `ALERTA_TEMPERATURA`         |
+| Umidade acima do limite                                 | `ALERTA_UMIDADE`             |
+| Temperatura e umidade acima do limite                   | `ALERTA_TEMPERATURA_UMIDADE` |
 
 ## Ideias de melhorias futuras
 
-- Criar frontend com dashboard visual.
-- Adicionar autenticação com JWT.
-- Usar PostgreSQL em vez de SQLite.
-- Integrar com MQTT.
-- Enviar alertas por e-mail ou Telegram.
-- Criar gráficos com histórico por sensor.
-- Adicionar deploy em Render, Railway ou Fly.io.
+* Adicionar gráficos no frontend.
+* Adicionar autenticação com JWT.
+* Usar PostgreSQL em vez de SQLite.
+* Integrar com MQTT.
+* Enviar alertas por e-mail ou Telegram.
+* Criar histórico visual por sensor.
+* Adicionar deploy em Render, Railway ou Fly.io.
+* Criar filtro por sensor no dashboard.
+* Adicionar paginação nas leituras.
 
 ## Objetivo do projeto
 
 Este projeto simula um cenário comum em ambientes industriais: sensores enviando dados de temperatura e umidade para uma aplicação central, que armazena as leituras e identifica situações de alerta automaticamente.
 
-Ele pode ser usado como projeto inicial de portfólio para demonstrar conhecimentos em backend, banco de dados, APIs REST, automação e IoT.
+Ele pode ser usado como projeto inicial de portfólio para demonstrar conhecimentos em backend, banco de dados, APIs REST, automação, IoT e desenvolvimento web básico.
 
 ## Licença
 
